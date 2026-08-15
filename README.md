@@ -34,6 +34,12 @@ Full documentation, design notes, and usage guides live in the project wiki:
 
 👉 [Project Wiki](https://github.com/ATMCHGIT18/graphics-framework/wiki)
 
+## Contribute
+
+Feel free to send me your ideas of improvements. This project is still active and still not labeled as finished so I am open to collect new ideas
+for making it more user friendly and easier to use, and feel free to contact me!
+Thanks.
+
 ## License
 
 Licensed under the [Apache License 2.0](LICENSE).
