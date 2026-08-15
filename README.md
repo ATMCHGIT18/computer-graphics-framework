@@ -32,7 +32,7 @@ This project is under active development. Core pixel buffer, window, and termina
 
 Full documentation, design notes, and usage guides live in the project wiki:
 
-👉 [Project Wiki](https://github.com/<username>/<repo-name>/wiki)
+👉 [Project Wiki](https://github.com/ATMCHGIT18/graphics-framework/wiki)
 
 ## License
 
