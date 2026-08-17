@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/output.dir/link.d CMakeFiles/output.dir/test.cpp.o -o output
