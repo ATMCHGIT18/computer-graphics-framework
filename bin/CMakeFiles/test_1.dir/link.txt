@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/test_1.dir/link.d CMakeFiles/test_1.dir/test_1.cpp.o -o test_1  /usr/lib/x86_64-linux-gnu/libutil.a

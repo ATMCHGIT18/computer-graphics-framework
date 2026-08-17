@@ -1,3 +1,0 @@
-/home/atmch/Projects/Personal Projects/Game Engine/CheTerminalEngine(CTE)/bin/CMakeFiles/test.dir
-/home/atmch/Projects/Personal Projects/Game Engine/CheTerminalEngine(CTE)/bin/CMakeFiles/edit_cache.dir
-/home/atmch/Projects/Personal Projects/Game Engine/CheTerminalEngine(CTE)/bin/CMakeFiles/rebuild_cache.dir
