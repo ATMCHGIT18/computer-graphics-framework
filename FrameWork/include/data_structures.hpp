@@ -26,22 +26,17 @@ namespace cgf{
 		float red = 0.0f;
 		float green = 0.0f;
 		float blue = 0.0f;
+		float alpha = 1.0f;
 
-		constexpr Color(float r, float g, float b) 
-        : red(r), green(g), blue(b) {}
+		constexpr Color(float r, float g, float b,float a) 
+        : red(r), green(g), blue(b), alpha(a) {}
 
-		Color& operator+(const Color& another){
-			red += another.red;
-			green += another.green;
-			blue += another.blue;
-			return *this;
+		Color operator+(const Color& another){
+			return Color(red + another.red,green + another.green,blue + another.blue,alpha);
 		}
 
-		Color& operator*(float f){
-			red *=f;
-			green *=f;
-			blue *=f;
-			return *this;
+		Color operator*(float f){
+			return Color(red*f,green*f,blue*f,alpha*f);
 		}
 
 		Color() = default;
@@ -50,11 +45,11 @@ namespace cgf{
 	};
 
 	namespace Colors {
-        inline constexpr cgf::Color Black{0.0f, 0.0f, 0.0f};
-        inline constexpr cgf::Color White{1.0f, 1.0f, 1.0f};
-        inline constexpr cgf::Color Red{1.0f, 0.0f, 0.0f};
-        inline constexpr cgf::Color Green{0.0f, 1.0f, 0.0f};
-        inline constexpr cgf::Color Blue{0.0f, 0.0f, 1.0f};
+        inline constexpr cgf::Color Black{0.0f, 0.0f, 0.0f,1.0f};
+        inline constexpr cgf::Color White{1.0f, 1.0f, 1.0f,1.0f};
+        inline constexpr cgf::Color Red{1.0f, 0.0f, 0.0f,1.0f};
+        inline constexpr cgf::Color Green{0.0f, 1.0f, 0.0f,1.0f};
+        inline constexpr cgf::Color Blue{0.0f, 0.0f, 1.0f,1.0f};
     }
 
 	struct Pixel{
@@ -75,13 +70,14 @@ namespace cgf{
             : red(static_cast<uint8_t>(col.red * 255.0f)),
               green(static_cast<uint8_t>(col.green * 255.0f)),
               blue(static_cast<uint8_t>(col.blue * 255.0f)),
-              alpha(255) {}
+              alpha(static_cast<uint8_t>(col.alpha * 255.0f)) {}
 	};
 
 	inline Color::Color(const Pixel& pixel)
         : red(pixel.red / 255.0f),
           green(pixel.green / 255.0f),
-          blue(pixel.blue / 255.0f) {}
+          blue(pixel.blue / 255.0f),
+          alpha(pixel.alpha / 255.0f) {}
 
 }
 
