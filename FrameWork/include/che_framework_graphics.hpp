@@ -2,6 +2,7 @@
 #define CHE_FRAMEWORK_GRAPHICS_HPP
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstdlib>
 #include <cstdint>
@@ -17,7 +18,8 @@
 #else
 #include <pty.h>
 #endif
-
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 // My libraries
 #include <data_structures.hpp>
 #include <terminal.hpp>
@@ -25,6 +27,7 @@
 #include <window.hpp>
 #include <che_algorithms.hpp>
 #include <primitives.hpp>
+#include <utils.hpp>
 
 #define PIXEL_SIZE 1;
 
