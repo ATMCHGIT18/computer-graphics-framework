@@ -12,11 +12,13 @@ namespace cgf{
 		std::vector<Color> pixels;
 
 	public:
-		Image(int height,int width):width(width), height(height),pixels(width*height,Color(0.0f,0.0f,0.0f)){}
+		Image(int height,int width):width(width), height(height),pixels(width*height,Color(0.0f,0.0f,0.0f,1.0f)){}
 		Image(int height,int width,Color& background_color):width(width), height(height),pixels(width*height,background_color){}
 		Image(int height,int width,const Color& background_color):width(width), height(height),pixels(width*height,background_color){}
 
-		Color& at(int x,int y){return pixels[y * width + x];}
+		Color& at(int x,int y) {return pixels[y * width + x];}
+
+		const Color& at(int x,int y) const {return pixels[y * width + x];}
 
 		int get_width() const {return width;}
 
