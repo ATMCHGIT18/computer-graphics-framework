@@ -2,3 +2,5 @@ output.*
 mygame.*
 test_1.*
 bin/
+
+*_test.txt
