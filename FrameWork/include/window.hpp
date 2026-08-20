@@ -79,19 +79,14 @@ namespace cgf{
 
 	class Renderer{
 	private:
-		Image& image ;
-		Window& window ;
+		PixelMatrix& pixels;
 	public:
-		Renderer(Window& window,Image& image):image(image),window(window){}
+		Renderer(PixelMatrix& pixels):pixels(pixels){}
 
-		Image& get_image() const {return image;}
-		Window& get_window() const {return window;}
-
-		// In what position the window should start and the image should be rendered there
-		int render(int start_x, int start_y)
+		int render(Image& image,int start_x, int start_y)
 		{
-		    int win_w = window.get_width();
-		    int win_h = window.get_height();
+		    int win_w = pixels.get_width();
+		    int win_h = pixels.get_height();
 
 		    int img_w = image.get_width();
 		    int img_h = image.get_height();
@@ -100,20 +95,19 @@ namespace cgf{
 		    {
 		        for (int x = 0; x < img_w; ++x)
 		        {
-		            int window_x = start_x + x;
-		            int window_y = start_y + y;
+		            int pixels_x = start_x + x;
+		            int pixels_y = start_y + y;
 
 		            // Don't render outside the window
-		            if (window_x < 0 || window_x >= win_w ||
-		                window_y < 0 || window_y >= win_h)
+		            if (pixels_x < 0 || pixels_x >= win_w ||
+		                pixels_y < 0 || pixels_y >= win_h)
 		            {
 		                continue;
 		            }
 
-		            window.get_pixels().at(window_x, window_y) = image.at(x, y);
+		            pixels.at(pixels_x, pixels_y) = image.at(x, y);
 		        }
 		    }
-
 		    return 1;
 		}
 	};
