@@ -54,7 +54,7 @@ namespace cgf{
 		        for (int x = 0; x < width; x++) {
 		            auto& p = pixels.at(x, y);
 		            std::cout << "\033[38;2;" << (int)p.red << ";" << (int)p.green << ";" << (int)p.blue << "m"
-		                       << "██"; // one logical pixel = 2 terminal columns, same row
+		                       << "███"; // one logical pixel = 2 terminal columns, same row
 		        }
 		        std::cout << "\033[0m\n";
 		    }
@@ -105,11 +105,56 @@ namespace cgf{
 		                continue;
 		            }
 
+		            if(image.at(x,y).alpha == 0){
+		            	continue;
+		            }
+
 		            pixels.at(pixels_x, pixels_y) = image.at(x, y);
 		        }
 		    }
 		    return 1;
 		}
+
+		// Primitive renders _ low level renders
+
+		void render_pixel(Color& col,int x, int y){
+			if (col.alpha != 0)
+				pixels.at(x,y) = col;
+		}
+
+		/* rendering a line with having a two end points.
+		algorithms codes are :
+		1. DDA : d
+		2. Bresenham Line Generation : b
+		3. Mid-point line generation: m*/
+		void render_line(Color& col, Point2D& p1,Point2D& p2,char& algorithm_code){
+
+			switch (algorithm_code){
+				case 'd':
+					Line::dda_line(p1,p2,pixels);
+					return;
+				case 'b':
+					Line::bresenham_line(p1,p2,pixels);
+					return;
+				case 'm':
+					Line::mid_point_line(p1,p2,pixels);
+					return;
+				default:
+					std::cout << "The selected code does not exists but as default programme uses dda algorithms" << std::endl;
+					Line::dda_line(p1,p2,pixels);
+					return;
+			}
+
+		}
+
+		/*Render a trangle with having 3 points and then now we could decide what to put inside of it.
+		We could use the implemented algorithms of filling.*/
+
+		void render_triangle(){}
+
+		/*Render a rectangle using 4 points and have a variable to make it filled or not filled with color
+		or another things like a sprit or something else.*/
+		void render_rectangle(){}
 	};
 
 };
