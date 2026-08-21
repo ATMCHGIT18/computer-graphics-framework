@@ -17,12 +17,20 @@ namespace cgf{
 		std::pair<Point2D,Point2D> get_points(){return std::make_pair(p1,p2);}
 		const std::pair<Point2D,Point2D> get_points() const {return std::make_pair(p1,p2);}
 
-		void render(PixelMatrix& matrix_buff, Color& col){
+		void render_dda(PixelMatrix& matrix_buff, Color& col){
 			Line::dda_line(p1,p2,matrix_buff,col);
 		}
 
-		void render(PixelMatrix& matrix_buff,const Color& col){
+		void render_dda(PixelMatrix& matrix_buff,const Color& col){
 			Line::dda_line(p1,p2,matrix_buff,col);
+		}
+
+		void render_bren(PixelMatrix& matrix_buff,Color& col){
+			Line::bresenham_line(p1,p2,matrix_buff,col);
+		}
+
+		void render_bren(PixelMatrix& matrix_buff,const Color& col){
+			Line::bresenham_line(p1,p2,matrix_buff,col);
 		}
 	};
 
