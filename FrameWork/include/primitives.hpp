@@ -18,19 +18,27 @@ namespace cgf{
 		const std::pair<Point2D,Point2D> get_points() const {return std::make_pair(p1,p2);}
 
 		void render_dda(PixelMatrix& matrix_buff, Color& col){
-			Line::dda_line(p1,p2,matrix_buff,col);
+			Line::dda(p1,p2,matrix_buff,col);
 		}
 
 		void render_dda(PixelMatrix& matrix_buff,const Color& col){
-			Line::dda_line(p1,p2,matrix_buff,col);
+			Line::dda(p1,p2,matrix_buff,col);
 		}
 
 		void render_bren(PixelMatrix& matrix_buff,Color& col){
-			Line::bresenham_line(p1,p2,matrix_buff,col);
+			Line::bresenham(p1,p2,matrix_buff,col);
 		}
 
 		void render_bren(PixelMatrix& matrix_buff,const Color& col){
-			Line::bresenham_line(p1,p2,matrix_buff,col);
+			Line::bresenham(p1,p2,matrix_buff,col);
+		}
+
+		void render_mid(PixelMatrix& matrix_buff,Color& col){
+			Line::mid_point(p1,p2,matrix_buff,col);
+		}
+
+		void render_mid(PixelMatrix& matrix_buff,const Color& col){
+			Line::mid_point(p1,p2,matrix_buff,col);
 		}
 	};
 
