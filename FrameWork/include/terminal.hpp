@@ -88,6 +88,7 @@ namespace cgf{
 		    float font_size = 1.0f;
 		    std::string application;
 		    bool open_ = false;
+		    std::string font_family = "font.normal.family=\"JetBrains Mono\"";
 		public:
 			TerminalLauncher() = default;
 
@@ -105,8 +106,9 @@ namespace cgf{
 			        std::vector<std::string> args = {
 			            "alacritty",
 			            "-o", fontArg,
-			            "-o window.dimensions.columns="+ std::to_string(col*2+4),
-			            "-o window.dimensions.lines="+ std::to_string(row+2),
+			            "-o",font_family,
+			            "-o window.dimensions.columns="+ std::to_string(col*3+6),
+			            "-o window.dimensions.lines="+ std::to_string(row+4),
 			            "-e", application, "--engine-child"  // two separate argv tokens
 			        };
 			        std::vector<char*> argv;
