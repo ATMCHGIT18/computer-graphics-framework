@@ -117,31 +117,60 @@ namespace cgf{
 
 		// Primitive renders _ low level renders
 
-		void render_pixel(Color& col,int x, int y){
-			if (col.alpha != 0)
-				pixels.at(x,y) = col;
+		void render_pixel(int x, int y,Color& col){
+			if(x >= 0 && y >= 0 && x < pixels.get_width() && y < pixels.get_height()){
+				if (col.alpha != 0){
+					pixels.at(x,y) = col;
+				}
+			}
+		}
+		void render_pixel(int x, int y,const Color& col){
+			if(x >= 0 && y >= 0 && x < pixels.get_width() && y < pixels.get_height()){
+				if (col.alpha != 0){
+					pixels.at(x,y) = col;
+				}
+			}
 		}
 
-		/* rendering a line with having a two end points.
+		/* Rendering a line with having a two end points.
 		algorithms codes are :
 		1. DDA : d
 		2. Bresenham Line Generation : b
 		3. Mid-point line generation: m*/
-		void render_line(Color& col, Point2D& p1,Point2D& p2,char& algorithm_code){
+		void render_line(Point2D& p1,Point2D& p2,Color& col,char& algorithm_code){
 
 			switch (algorithm_code){
 				case 'd':
-					Line::dda_line(p1,p2,pixels,col);
+					Line::dda(p1,p2,pixels,col);
 					return;
 				case 'b':
-					Line::bresenham_line(p1,p2,pixels,col);
+					Line::bresenham(p1,p2,pixels,col);
 					return;
 				case 'm':
-					// Line::mid_point_line(p1,p2,pixels,col);
+					Line::mid_point(p1,p2,pixels,col);
 					return;
 				default:
-					std::cout << "The selected code does not exists but as default programme uses dda algorithms" << std::endl;
-					Line::dda_line(p1,p2,pixels,col);
+					std::cout << "The selected code does not exists but as default programme uses mid point algorithms" << std::endl;
+					Line::mid_point(p1,p2,pixels,col);
+					return;
+			}
+
+		}
+		void render_line(Point2D& p1,Point2D& p2,const Color& col,const char& algorithm_code){
+
+			switch (algorithm_code){
+				case 'd':
+					Line::dda(p1,p2,pixels,col);
+					return;
+				case 'b':
+					Line::bresenham(p1,p2,pixels,col);
+					return;
+				case 'm':
+					Line::mid_point(p1,p2,pixels,col);
+					return;
+				default:
+					std::cout << "The selected code does not exists but as default programme uses mid point algorithms" << std::endl;
+					Line::mid_point(p1,p2,pixels,col);
 					return;
 			}
 
