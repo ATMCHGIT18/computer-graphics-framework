@@ -24,8 +24,8 @@
 #include <data_structures.hpp>
 #include <terminal.hpp>
 #include <pixel.hpp>
-#include <window.hpp>
 #include <che_algorithms.hpp>
+#include <window.hpp>
 #include <primitives.hpp>
 #include <utils.hpp>
 
