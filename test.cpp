@@ -23,8 +23,12 @@ int main(int argc, char** argv) {
     // cgf::Image image(50,50,cgf::Colors::White);
     cgf::SampleBuffer samp(50,50,4);
     cgf::Point2D p1(10,45);
-    cgf::Point2D p2(250,300);
-    cgf::Line2D line(p1,p2);
+    cgf::Point2D p2(250,500);
+    cgf::Point2D p3(100,10);
+    cgf::Line2D line1(p1,p2);
+    cgf::Line2D line2(p3,p2);
+    line1.render_bren(window.get_pixels(),cgf::Colors::Cyan);
+    line2.render_dda(window.get_pixels(),cgf::Colors::Yellow);
 
     
     for (int i = 0; i < height; i++) window.get_pixels().set_pixel(i, i, 0, 255, 0);
@@ -37,7 +41,7 @@ int main(int argc, char** argv) {
 
     cgf::Renderer render(window.get_pixels());
     render.render(image,150,150);
-    line.render(window.get_pixels(),cgf::Colors::Blue);
+    
     window.show();
     std::cin.ignore();
     return 0;
