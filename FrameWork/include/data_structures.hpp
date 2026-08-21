@@ -50,6 +50,9 @@ namespace cgf{
         inline constexpr cgf::Color Red{1.0f, 0.0f, 0.0f,1.0f};
         inline constexpr cgf::Color Green{0.0f, 1.0f, 0.0f,1.0f};
         inline constexpr cgf::Color Blue{0.0f, 0.0f, 1.0f,1.0f};
+        inline constexpr cgf::Color Yellow{1.0f, 1.0f, 0.0f,1.0f};
+        inline constexpr cgf::Color Purple{1.0f, 0.0f, 1.0f,1.0f};
+        inline constexpr cgf::Color Cyan{0.0f, 1.0f, 1.0f,1.0f};
     }
 
 	struct Pixel{
