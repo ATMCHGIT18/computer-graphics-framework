@@ -131,17 +131,17 @@ namespace cgf{
 
 			switch (algorithm_code){
 				case 'd':
-					Line::dda_line(p1,p2,pixels);
+					Line::dda_line(p1,p2,pixels,col);
 					return;
 				case 'b':
-					Line::bresenham_line(p1,p2,pixels);
+					Line::bresenham_line(p1,p2,pixels,col);
 					return;
 				case 'm':
-					Line::mid_point_line(p1,p2,pixels);
+					// Line::mid_point_line(p1,p2,pixels,col);
 					return;
 				default:
 					std::cout << "The selected code does not exists but as default programme uses dda algorithms" << std::endl;
-					Line::dda_line(p1,p2,pixels);
+					Line::dda_line(p1,p2,pixels,col);
 					return;
 			}
 
