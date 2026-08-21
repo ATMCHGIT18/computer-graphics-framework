@@ -10,8 +10,9 @@ namespace cgf{
 		return (int)(n+1);
 	}
 
-	namespace line_gen{
-		void dda_line(Point2D& p1 , Point2D& p2, Window& window, Color& col){
+	class Line{
+	public:
+		static void dda_line(Point2D& p1 , Point2D& p2, PixelMatrix& matrix_buff, Color& col){
 			float dx = p2.x - p1.x;
 			float dy = p2.y - p1.y;
 
@@ -25,14 +26,14 @@ namespace cgf{
 			float y = p1.y;
 			for (int i=0; i < steps; i++){
 				// put the pixel as the color;
-				window.get_pixels().at(round(x),round(y)) = col;
+				matrix_buff.at(round(x),round(y)) = col;
 				x += x_incre;
 				y += y_incre;
 			}
 
 		}
 
-		void dda_line(Point2D& p1 , Point2D& p2, Window& window, const Color& col){
+		static void dda_line(Point2D& p1 , Point2D& p2, PixelMatrix& matrix_buff, const Color& col){
 			int dx = p2.x - p1.x;
 			int dy = p2.y - p1.y;
 
@@ -46,13 +47,17 @@ namespace cgf{
 			float y = p1.y;
 			for (int i=0; i < steps; i++){
 				// put the pixel as the color;
-				window.get_pixels().at(round(x),round(y)) = col;
+				matrix_buff.at(round(x),round(y)) = col;
 				x += x_incre;
 				y += y_incre;
 			}
 
 		}
-	}
+
+		static void bresenham_line(){
+			return;
+		}
+	};
 }
 
 #endif
