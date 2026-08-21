@@ -17,7 +17,7 @@ namespace cgf{
 	class Line{
 	
 	public:
-		static void dda_line(Point2D& p1 , Point2D& p2, PixelMatrix& matrix_buff, Color& col){
+		static void dda(Point2D& p1 , Point2D& p2, PixelMatrix& matrix_buff, Color& col){
 			float dx = p2.x - p1.x;
 			float dy = p2.y - p1.y;
 
@@ -40,7 +40,7 @@ namespace cgf{
 
 		}
 
-		static void dda_line(Point2D& p1 , Point2D& p2, PixelMatrix& matrix_buff, const Color& col){
+		static void dda(Point2D& p1 , Point2D& p2, PixelMatrix& matrix_buff, const Color& col){
 			int dx = p2.x - p1.x;
 			int dy = p2.y - p1.y;
 
@@ -64,7 +64,7 @@ namespace cgf{
 
 		}
 
-		static void bresenham_line(Point2D& p1, Point2D& p2,PixelMatrix& matrix_buff,Color& col){
+		static void bresenham(Point2D& p1, Point2D& p2,PixelMatrix& matrix_buff,Color& col){
 			int dx(std::abs(p2.x - p1.x)),dy(std::abs(p2.y - p1.y));
 			int sx = sign(p2.x - p1.x);
 			int sy = sign(p2.y - p1.y);
@@ -91,7 +91,7 @@ namespace cgf{
 
 		}
 
-		static void bresenham_line(Point2D& p1, Point2D& p2,PixelMatrix& matrix_buff,const Color& col){
+		static void bresenham(Point2D& p1, Point2D& p2,PixelMatrix& matrix_buff,const Color& col){
 			int dx(std::abs(p2.x - p1.x)),dy(std::abs(p2.y - p1.y));
 			int sx = sign(p2.x - p1.x);
 			int sy = sign(p2.y - p1.y);
@@ -113,6 +113,96 @@ namespace cgf{
 				if(e2 < dx){
 					err +=dx;
 					y +=sy;
+				}
+			}
+
+		}
+
+		static void mid_point(Point2D& p1 ,Point2D& p2, PixelMatrix& matrix_buff,Color& col){
+			int dx(std::abs(p2.x - p1.x)) ,dy(std::abs(p2.y-p1.y));
+			int sx = sign(p2.x - p1.x);
+			int sy = sign(p2.y - p1.y);
+			int err = dx - dy;
+
+			int x(p1.x) , y(p1.y);
+
+			if(dx > dy){
+				int d = dy - dx/2;
+
+				while(x != p2.x){
+					if(x >= 0 && x < matrix_buff.get_width() && y >= 0 && y < matrix_buff.get_height()){
+						matrix_buff.at(x,y) = col;
+					}
+					x += sx;
+					if(d < 0){
+						d +=dy;
+					}
+					else{
+						y += sy;
+						d += dy - dx;
+					}
+				}
+			}
+			else{
+				int d = dx - dy/2;
+				while(y != p2.y ){
+					if(x >= 0 && x < matrix_buff.get_width() && y >= 0 && y < matrix_buff.get_height()){
+						matrix_buff.at(x,y) = col;
+					}
+					y += sy;
+					if(d < 0){
+						d += dx;
+					}
+					else{
+						x += sx;
+						d += dx - dy;
+					}
+
+				}
+			}
+
+		}
+
+		static void mid_point(Point2D& p1 ,Point2D& p2, PixelMatrix& matrix_buff,const Color& col){
+			int dx(std::abs(p2.x - p1.x)) ,dy(std::abs(p2.y-p1.y));
+			int sx = sign(p2.x - p1.x);
+			int sy = sign(p2.y - p1.y);
+			int err = dx - dy;
+
+			int x(p1.x) , y(p1.y);
+
+			if(dx > dy){
+				int d = dy - dx/2;
+
+				while(x != p2.x){
+					if(x >= 0 && x < matrix_buff.get_width() && y >= 0 && y < matrix_buff.get_height()){
+						matrix_buff.at(x,y) = col;
+					}
+					x += sx;
+					if(d < 0){
+						d +=dy;
+					}
+					else{
+						y += sy;
+						d += dy - dx;
+					}
+				}
+			}
+			else{
+				int d = dx - dy/2;
+				while(y != p2.y ){
+					if(x >= 0 && x < matrix_buff.get_width() && y >= 0 && y < matrix_buff.get_height()){
+						matrix_buff.at(x,y) = col;
+					}
+					y += sy;
+					if(d < 0){
+						d += dx;
+					}
+					else{
+						x += sx;
+						d += dx - dy;
+					}
+
 				}
 			}
 
