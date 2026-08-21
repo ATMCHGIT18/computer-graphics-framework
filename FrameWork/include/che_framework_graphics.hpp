@@ -25,6 +25,7 @@
 #include <terminal.hpp>
 #include <pixel.hpp>
 #include <che_algorithms.hpp>
+#include <event.hpp>
 #include <window.hpp>
 #include <primitives.hpp>
 #include <utils.hpp>
