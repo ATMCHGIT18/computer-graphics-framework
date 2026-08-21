@@ -7,7 +7,6 @@ int main(int argc, char** argv) {
 
     bool is_engine_child = (argc > 1 && std::string(argv[1]) == "--engine-child");
     cgf::Image image = cgf::ImageLoader::load("./FrameWork/src/spirit_test.png");
-    std::cout << "Image size is: " << image.get_width() << " X "<< image.get_height() << std::endl;
 
     if (!is_engine_child) {
         char self_path[4096];
@@ -38,7 +37,7 @@ int main(int argc, char** argv) {
 
     cgf::Renderer render(window.get_pixels());
     render.render(image,150,150);
-    line.render(window,cgf::Colors::Blue);
+    line.render(window.get_pixels(),cgf::Colors::Blue);
     window.show();
     std::cin.ignore();
     return 0;
