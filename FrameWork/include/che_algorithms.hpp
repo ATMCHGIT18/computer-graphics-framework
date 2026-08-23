@@ -208,6 +208,213 @@ namespace cgf{
 
 		}
 	};
+
+	class Circle{
+
+	public:
+		
+		static void bresenham(Point2D& center,int radius,PixelMatrix& matrix_buff,Color& col){
+			int d = 3 - 2* radius;
+			int x = 0;
+			int y = radius;
+
+			while(x <= y){
+				if (x>= 0 && y >= 0 && x < matrix_buff.get_width() && y < matrix_buff.get_height() ){
+					matrix_buff.at(x+center.x,y+center.y) = col;
+					matrix_buff.at(-x+center.x,y+center.y) = col;
+					matrix_buff.at(x+center.x,-y+center.y) = col;
+					matrix_buff.at(-x+center.x,-y+center.y) = col;
+					matrix_buff.at(y+center.x,x+center.y) = col;
+					matrix_buff.at(-y+center.x,x+center.y) = col;
+					matrix_buff.at(y+center.x,-x+center.y) = col;
+					matrix_buff.at(-y+center.x,-x+center.y) = col;
+				}
+				if (d < 0)
+					d += 4*x +6;
+				else{
+					d += 4*x - 4*y;
+					y -=1;
+				}
+				x++;
+			}
+		}
+		static void bresenham(Point2D& center,int radius,PixelMatrix& matrix_buff,const Color& col){
+			int d = 3 - 2* radius;
+			int x = 0;
+			int y = radius;
+
+			while(x <= y){
+				if (x>= 0 && y >= 0 && x < matrix_buff.get_width() && y < matrix_buff.get_height() ){
+					matrix_buff.at(x+center.x,y+center.y) = col;
+					matrix_buff.at(-x+center.x,y+center.y) = col;
+					matrix_buff.at(x+center.x,-y+center.y) = col;
+					matrix_buff.at(-x+center.x,-y+center.y) = col;
+					matrix_buff.at(y+center.x,x+center.y) = col;
+					matrix_buff.at(-y+center.x,x+center.y) = col;
+					matrix_buff.at(y+center.x,-x+center.y) = col;
+					matrix_buff.at(-y+center.x,-x+center.y) = col;
+				}
+				if (d < 0)
+					d += 4*x +6;
+				else{
+					d += 4*x - 4*y;
+					y -=1;
+				}
+				x++;
+			}
+		}
+
+		static void mid_point(Point2D& center,int radius, PixelMatrix& matrix_buff,Color& col){
+			int x(radius),y(0);
+			int d = 1 - radius;
+
+			while(x >= y){
+				if(x>=0 && y>=0 && x < matrix_buff.get_width() && y < matrix_buff.get_height()){
+					matrix_buff.at(center.x + x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y - y) = col;
+					matrix_buff.at(center.x + x,center.y - y) = col;
+					matrix_buff.at(center.x + y,center.y + x) = col;
+					matrix_buff.at(center.x - y,center.y + x) = col;
+					matrix_buff.at(center.x + y,center.y - x) = col;
+					matrix_buff.at(center.x - y,center.y - x) = col;
+				}
+
+				if (d <= 0) 
+					d += 2*y + 1;
+				else{
+					d += 2*y - 2*x +1;
+					x--;
+				}
+				y++;
+			}
+		}
+		static void mid_point(Point2D& center,int radius, PixelMatrix& matrix_buff,const Color& col){
+			int x(radius),y(0);
+			int d = 1 - radius;
+
+			while(x >= y){
+				if(x>=0 && y>=0 && x < matrix_buff.get_width() && y < matrix_buff.get_height()){
+					matrix_buff.at(center.x + x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y - y) = col;
+					matrix_buff.at(center.x + x,center.y - y) = col;
+					matrix_buff.at(center.x + y,center.y + x) = col;
+					matrix_buff.at(center.x - y,center.y + x) = col;
+					matrix_buff.at(center.x + y,center.y - x) = col;
+					matrix_buff.at(center.x - y,center.y - x) = col;
+				}
+
+				if (d <= 0) 
+					d += 2*y + 1;
+				else{
+					d += 2*y - 2*x +1;
+					x--;
+				}
+				y++;
+			}
+		}
+	};
+
+	class Ellips{
+	public:
+		static void mid_point(Point2D& center,int radius_x,int radius_y,PixelMatrix& matrix_buff, Color& col){
+			int x(0),y(radius_y);
+			int d1 = radius_y*radius_y + (radius_x*radius_x)/4 - (radius_x*radius_x)*radius_y;
+			int dx = 2 *(radius_y*radius_y)*x;
+			int dy = 2 * (radius_x*radius_x)*y;
+
+			while(dx < dy){
+				if (x>=0 && y >=0 && x < matrix_buff.get_width() && y < matrix_buff.get_height()){
+					matrix_buff.at(center.x + x,center.y + y) = col;
+					matrix_buff.at(center.x + x,center.y - y) = col;
+					matrix_buff.at(center.x - x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y - y) = col;
+				}
+				x++;
+				if (d1 < 0){
+					dx = dx + (2 * radius_y*radius_y);
+                    d1 = d1 + dx + (radius_y*radius_y);
+				}
+				else{
+					y--;
+					dx = dx + (2 * radius_y * radius_y);
+		            dy = dy - (2 * radius_x * radius_x);
+					d1 += dx - dy + (radius_y*radius_y);
+				}
+			}
+
+			int d2 = (radius_y*radius_y)*((x+0.5) * (x+0.5))+(radius_x*radius_x)*((y-1)*(y-1)) - (radius_x*radius_x)*(radius_y*radius_y);
+
+			while(y >= 0){
+				if (x>=0 && y >=0 && x < matrix_buff.get_width() && y < matrix_buff.get_height()){
+					matrix_buff.at(center.x + x,center.y + y) = col;
+					matrix_buff.at(center.x + x,center.y - y) = col;
+					matrix_buff.at(center.x - x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y - y) = col;
+				}
+				y--;
+				if(d2 > 0){
+					dy = dy - (2 * radius_x * radius_x);
+		            d2 = d2 + (radius_x * radius_x) - dy;
+				}
+				else{
+					x++;
+					dx = dx + (2 * radius_y * radius_y);
+		            dy = dy - (2 * radius_x * radius_x);
+		            d2 = d2 + dx - dy + (radius_x * radius_x);
+				}
+			}
+		}
+		static void mid_point(Point2D& center,int radius_x,int radius_y,PixelMatrix& matrix_buff,const Color& col){
+			int x(0),y(radius_y);
+			int d1 = radius_y*radius_y + (radius_x*radius_x)/4 - (radius_x*radius_x)*radius_y;
+			int dx = 2 *(radius_y*radius_y)*x;
+			int dy = 2 * (radius_x*radius_x)*y;
+
+			while(dx < dy){
+				if (x>=0 && y >=0 && x < matrix_buff.get_width() && y < matrix_buff.get_height()){
+					matrix_buff.at(center.x + x,center.y + y) = col;
+					matrix_buff.at(center.x + x,center.y - y) = col;
+					matrix_buff.at(center.x - x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y - y) = col;
+				}
+				x++;
+				if (d1 < 0){
+					dx = dx + (2 * radius_y*radius_y);
+                    d1 = d1 + dx + (radius_y*radius_y);
+				}
+				else{
+					y--;
+					dx = dx + (2 * radius_y * radius_y);
+		            dy = dy - (2 * radius_x * radius_x);
+					d1 += dx - dy + (radius_y*radius_y);
+				}
+			}
+
+			int d2 = (radius_y*radius_y)*((x+0.5) * (x+0.5))+(radius_x*radius_x)*((y-1)*(y-1)) - (radius_x*radius_x)*(radius_y*radius_y);
+
+			while(y >= 0){
+				if (x>=0 && y >=0 && x < matrix_buff.get_width() && y < matrix_buff.get_height()){
+					matrix_buff.at(center.x + x,center.y + y) = col;
+					matrix_buff.at(center.x + x,center.y - y) = col;
+					matrix_buff.at(center.x - x,center.y + y) = col;
+					matrix_buff.at(center.x - x,center.y - y) = col;
+				}
+				y--;
+				if(d2 > 0){
+					dy = dy - (2 * radius_x * radius_x);
+		            d2 = d2 + (radius_x * radius_x) - dy;
+				}
+				else{
+					x++;
+					dx = dx + (2 * radius_y * radius_y);
+		            dy = dy - (2 * radius_x * radius_x);
+		            d2 = d2 + dx - dy + (radius_x * radius_x);
+				}
+			}
+		}
+	};
 }
 
 #endif
