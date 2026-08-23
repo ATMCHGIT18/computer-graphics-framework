@@ -104,7 +104,7 @@ namespace cgf{
 
 	};
 
-	class Rectangle : Primitive{
+	class Rectangle2D : Primitive{
 	private:
 		Point2D& p1;
 		Point2D& p2;
@@ -116,8 +116,8 @@ namespace cgf{
 		Line2D l3;
 		Line2D l4;
 	public:
-		Rectangle(Point2D& p1,Point2D& p2,Point2D& p3,Point2D& p4):p1(p1),p2(p2),p3(p3),p4(p4),l1(p1,p2),l2(p2,p3),l3(p3,p4),l4(p4,p1){}
-		Rectangle(std::array<Point2D*,4> points):p1(*points[0]),p2(*points[1]),p3(*points[2]),p4(*points[3])
+		Rectangle2D(Point2D& p1,Point2D& p2,Point2D& p3,Point2D& p4):p1(p1),p2(p2),p3(p3),p4(p4),l1(p1,p2),l2(p2,p3),l3(p3,p4),l4(p4,p1){}
+		Rectangle2D(std::array<Point2D*,4> points):p1(*points[0]),p2(*points[1]),p3(*points[2]),p4(*points[3])
 												,l1(*points[0],*points[1]),l2(*points[1],*points[2]),l3(*points[2],*points[3]),l4(*points[3],*points[0]){}
 
 		std::array<Point2D*,4> get_points() const {return {&p1,&p2,&p3,&p4};}
@@ -160,6 +160,45 @@ namespace cgf{
 			Line::mid_point(p2,p3,matrix_buff,col);
 			Line::mid_point(p3,p4,matrix_buff,col);
 			Line::mid_point(p4,p1,matrix_buff,col);
+		}
+	};
+
+	class Circle2D : Primitive{
+	private:
+		Point2D& center;
+		int radius;
+
+	public:
+		Circle2D(Point2D& c,int r): center(c),radius(r){}
+
+		void render_bren(PixelMatrix& matrix_buff,Color& col){
+			Circle::bresenham(center,radius,matrix_buff,col);
+		}
+		void render_bren(PixelMatrix& matrix_buff,const Color& col){
+			Circle::bresenham(center,radius,matrix_buff,col);
+		}
+
+		void render_mid(PixelMatrix& matrix_buff,Color& col){
+			Circle::mid_point(center,radius,matrix_buff,col);
+		}
+		void render_mid(PixelMatrix& matrix_buff,const Color& col){
+			Circle::mid_point(center,radius,matrix_buff,col);
+		}
+	};
+
+	class Ellips2D : Primitive{
+	private:
+		Point2D& center;
+		int radius_x;
+		int radius_y;
+	public:
+		Ellips2D(Point2D& c, int r_x,int r_y):center(c),radius_x(r_x),radius_y(r_y){}
+
+		void render_mid(PixelMatrix& matrix_buff,Color& col){
+			Ellips::mid_point(center,radius_x,radius_y,matrix_buff,col);
+		}
+		void render_mid(PixelMatrix& matrix_buff,const Color& col){
+			Ellips::mid_point(center,radius_x,radius_y,matrix_buff,col);
 		}
 	};
 
