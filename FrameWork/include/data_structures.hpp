@@ -16,6 +16,8 @@ namespace cgf{
 
 	};
 
+	using Vertex = Point2D;
+
 	struct Point3D{
 		float x;
 		float y;
