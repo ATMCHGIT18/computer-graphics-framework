@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <vector>
+#include <array>
 #include <algorithm>
 #include <string>
 #include <unistd.h>
