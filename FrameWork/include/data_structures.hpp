@@ -14,6 +14,16 @@ namespace cgf{
 		Point2D(float x, float y):x(x),y(y){}
 		Point2D() = default;
 
+		Point2D operator+(const Point2D& other){
+			return Point2D(x+other.x,y+other.y);
+		}
+		Point2D operator*(const float f){
+			return Point2D(x*f,y*f);
+		}
+		Point2D operator/(const float f){
+			return Point2D(x/f,y/f);
+		}
+
 	};
 
 	using Vertex = Point2D;
@@ -44,6 +54,13 @@ namespace cgf{
 		Color() = default;
 
 		explicit Color(const Pixel& pixel);
+
+		bool operator==(const Color& other) const{
+			return red == other.red && green == other.green && blue == other.blue && alpha == other.alpha;
+		}
+		bool operator!=(const Color& other) const{
+			return !(*this == other);
+		}
 	};
 
 	namespace Colors {
