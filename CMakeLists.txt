@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 project(CGF_Test VERSION 0.1.0 LANGUAGES CXX C)
 
+set(CMAKE_CXX_STANDART 20)
+
 find_library(UTIL_LIB NAMES util)
 
 include_directories("./FrameWork/include")
