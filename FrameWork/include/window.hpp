@@ -141,17 +141,17 @@ namespace cgf{
 
 			switch (algorithm_code){
 				case 'd':
-					Line::dda(p1,p2,pixels,col);
+					Algo::Line::dda(p1,p2,pixels,col);
 					return;
 				case 'b':
-					Line::bresenham(p1,p2,pixels,col);
+					Algo::Line::bresenham(p1,p2,pixels,col);
 					return;
 				case 'm':
-					Line::mid_point(p1,p2,pixels,col);
+					Algo::Line::mid_point(p1,p2,pixels,col);
 					return;
 				default:
 					std::cout << "The selected code does not exists but as default programme uses mid point algorithms" << std::endl;
-					Line::mid_point(p1,p2,pixels,col);
+					Algo::Line::mid_point(p1,p2,pixels,col);
 					return;
 			}
 
@@ -160,17 +160,17 @@ namespace cgf{
 
 			switch (algorithm_code){
 				case 'd':
-					Line::dda(p1,p2,pixels,col);
+					Algo::Line::dda(p1,p2,pixels,col);
 					return;
 				case 'b':
-					Line::bresenham(p1,p2,pixels,col);
+					Algo::Line::bresenham(p1,p2,pixels,col);
 					return;
 				case 'm':
-					Line::mid_point(p1,p2,pixels,col);
+					Algo::Line::mid_point(p1,p2,pixels,col);
 					return;
 				default:
 					std::cout << "The selected code does not exists but as default programme uses mid point algorithms" << std::endl;
-					Line::mid_point(p1,p2,pixels,col);
+					Algo::Line::mid_point(p1,p2,pixels,col);
 					return;
 			}
 
