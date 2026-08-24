@@ -4,27 +4,42 @@
 #include <./che_framework_graphics.hpp>
 
 namespace cgf{
+	class Matrix{
+	public:
+		virtual ~Matrix() =default;
+
+		virtual Pixel& at(int x,int y) = 0;
+		virtual const Pixel& at(int x, int y) const = 0;
+		virtual int get_width() const = 0;
+		virtual int get_height() const = 0;
+		virtual void set_pixel(int x,int y, Color& col) = 0;
+		virtual void set_pixel(int x,int y, const Color& col) = 0;
+
+	};
 	
-	class Image{
+	class Image : public Matrix{
 	private:
 		int width;
 		int height;
-		std::vector<Color> pixels;
+		std::vector<Pixel> pixels;
 
 	public:
 		Image(int height,int width):width(width), height(height),pixels(width*height,Color(0.0f,0.0f,0.0f,1.0f)){}
 		Image(int height,int width,Color& background_color):width(width), height(height),pixels(width*height,background_color){}
 		Image(int height,int width,const Color& background_color):width(width), height(height),pixels(width*height,background_color){}
 
-		Color& at(int x,int y) {return pixels[y * width + x];}
+		Pixel& at(int x,int y) override {return pixels[y * width + x];}
 
-		const Color& at(int x,int y) const {return pixels[y * width + x];}
+		const Pixel& at(int x,int y) const override {return pixels[y * width + x];}
 
-		int get_width() const {return width;}
+		int get_width() const override{return width;}
 
-		int get_height() const {return height;}
+		int get_height() const override{return height;}
 
-		void set_pixel(int x , int y,Color& col){
+		void set_pixel(int x , int y,Color& col) override {
+			at(x,y) = col;
+		}
+		void set_pixel(int x , int y,const Color& col) override {
 			at(x,y) = col;
 		}
 
@@ -79,7 +94,7 @@ namespace cgf{
 
 	};
 
-	class PixelMatrix{
+	class PixelMatrix : public Matrix{
 	private:
 		int width;
 		int height;
@@ -98,36 +113,24 @@ namespace cgf{
         	: width(width), height(height), pixels(width * height, Pixel{})
     	{}
 
-		Pixel& at(int x,int y){
+		Pixel& at(int x,int y) override {
 			return pixels[index(x,y)];
 		}
 
-		const Pixel& at(int x, int y) const {
+		const Pixel& at(int x, int y) const override{
 			return pixels[index(x,y)];
 		}
 
-		void set_pixel(int x, int y, std::vector<int> colors){
-			Pixel& selected_pixel = this->at(x,y);
-			if (colors.size() == 4)
-				{
-					selected_pixel = {colors[0],colors[1],colors[2],colors[3]};
-				}
-			else if (colors.size() == 3)
-				{
-					selected_pixel = {colors[0],colors[1],colors[2],0};
-				}
-			else 
-				{
-					std::cout << "The color is of " << colors.size() << " matrix which is not supported. Supported size is 3 (R,G,B), 4(R,G,B,Alpha). " << std::endl;
-				}
-		}
 
-		void set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
-        	at(x, y) = Pixel{r, g, b, a};
+		void set_pixel(int x, int y, Color& col) override{
+        	at(x, y) = Pixel(col);
+    	}
+    	void set_pixel(int x, int y,const Color& col) override{
+        	at(x, y) = Pixel(col);
     	}
 
-    	int get_width() const { return width; }
-    	int get_height() const { return height; }
+    	int get_width() const override{ return width; }
+    	int get_height() const override{ return height; }
 
     	// For the transparency and alpha channel architecture, uses
     	// result = src_color * src_alpha + dst_color * (1 - src_alpha) where dst is the already color in the pixel
