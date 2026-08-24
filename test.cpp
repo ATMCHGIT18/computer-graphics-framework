@@ -53,24 +53,40 @@ int main(int argc, char** argv) {
     // cgf::Point2D center5(150,60);
     // int radius = 20;
 
-    // cgf::Circle::bresenham(center,radius,window.get_pixels(),cgf::Colors::Blue);
-    // cgf::Circle2D circ(center1,radius);
+    // cgf::Algo::Circle::bresenham(center,radius,window.get_pixels(),cgf::Colors::Blue);
+    // cgf::Shape::Circle2D circ(center1,radius);
     // circ.render_bren(window.get_pixels(),cgf::Colors::Cyan);
 
-    // cgf::Circle::mid_point(center2,radius,window.get_pixels(),cgf::Colors::Red);
-    // cgf::Circle2D circ1(center3,radius);
+    // cgf::Algo::Circle::mid_point(center2,radius,window.get_pixels(),cgf::Colors::Red);
+    // cgf::Shape::Circle2D circ1(center3,radius);
     // circ1.render_mid(window.get_pixels(),cgf::Colors::Purple);
 
-    // cgf::Ellips::mid_point(center4,20,50,window.get_pixels(),cgf::Colors::Yellow);
-    // cgf::Ellips2D elip(center5,20,50);
+    // cgf::Algo::Ellips::mid_point(center4,20,50,window.get_pixels(),cgf::Colors::Yellow);
+    // cgf::Shape::Ellips2D elip(center5,20,50);
     // elip.render_mid(window.get_pixels(),cgf::Colors::Green);
 
+    // Filling Test -------------------------------------------------------------------------------
+    // cgf::Point2D p1(15,30);
+    // cgf::Point2D p3(20,80);
+    // cgf::Point2D p2(10,90);
+    // cgf::Point2D p4(60,10);
+    // cgf::Shape::Triangle2D tri(p1,p2,p3);
+    // cgf::Shape::Rectangle2D rect(p1,p2,p3,p4);
+    // matrix buufer is this image
+    // cgf::Image img(100,100,cgf::Colors::Red);
+
+    // tri.render_fill_scanline(window.get_pixels(),cgf::Colors::Blue);
+    // tri.render_fill_flood(img,cgf::Colors::Red,cgf::Colors::Blue);
+
+    // rect.render_fill_flood(img,cgf::Colors::Red,cgf::Colors::Green);
+
     // Image PNG Loading, Spirit Rasterisation Test ---------------------------------------
-    
     // cgf::Image sprit = cgf::ImageLoader::load("./FrameWork/src/spirit_test.png");
+    
     // Rendering Section ------------------------------------------------------------------------
 
     cgf::Renderer render(window.get_pixels());
+    // render.render(img,100,100);
     // render.render(sprit,150,150);
     // render.render_line(p3,p2,cgf::Colors::Purple,'m');
     window.show();
