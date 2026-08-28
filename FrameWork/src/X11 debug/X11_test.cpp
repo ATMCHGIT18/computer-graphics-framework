@@ -2,7 +2,7 @@
 
 
 int main(){
-    cgf::Image sprit = cgf::ImageLoader::load("/home/atmch/Projects/Personal Projects/Game Engine/CheTerminalEngine(CTE)/FrameWork/src/spirit_test.png");
+    cgf::Image sprit = cgf::ImageLoader::load("../spirit_test.png");
 
 	cgf::Window_X11 window(800,600);
 	cgf::Renderer_X11 render(window.get_pixels(),window);
