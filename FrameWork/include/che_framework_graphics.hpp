@@ -17,10 +17,36 @@
 #if defined(__APPLE__)
 #include <util.h>
 #else
+
+#if defined(__APPLE__)
+#include <unistd.h>
+#include <termios.h>
+#include <sys/select.h>
+#include <ApplicationServices/ApplicationServices.h>
+#include <Carbon/Carbon.h>
+#elif defined(_WIN32) || defined(_WIN64)
+#include <conio.h>
+#include <windows.h>
+#elif defined(__linux__)
+#include <unistd.h>
+#include <termios.h>
+#include <sys/select.h>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+
+#undef Window
+#undef index
+#endif
+
+#include <thread>
+#include <chrono>
 #include <pty.h>
 #endif
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
 // My libraries
 #include <data_structures.hpp>
 #include <terminal.hpp>
