@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    cgf::Window window(height, width, font_size, "test");
+    cgf::WindowTerminal window(height, width, font_size, "test");
     window.get_pixels().clear();
     // cgf::Image image(50,50,cgf::Colors::White);
     cgf::SampleBuffer samp(50,50,4);
@@ -81,13 +81,14 @@ int main(int argc, char** argv) {
     // rect.render_fill_flood(img,cgf::Colors::Red,cgf::Colors::Green);
 
     // Image PNG Loading, Spirit Rasterisation Test ---------------------------------------
-    // cgf::Image sprit = cgf::ImageLoader::load("./FrameWork/src/spirit_test.png");
+    cgf::Image sprit = cgf::ImageLoader::load("./FrameWork/src/spirit_test.png");
     
     // Rendering Section ------------------------------------------------------------------------
 
+    
     cgf::Renderer render(window.get_pixels());
     // render.render(img,100,100);
-    // render.render(sprit,150,150);
+    render.render(sprit,150,150);
     // render.render_line(p3,p2,cgf::Colors::Purple,'m');
     window.show();
     std::cin.ignore();

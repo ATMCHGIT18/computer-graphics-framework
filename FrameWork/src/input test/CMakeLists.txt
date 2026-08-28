@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDART 20)
 
 find_library(UTIL_LIB NAMES util)
 
-include_directories("./FrameWork/include")
+include_directories("../../include")
 
-add_executable(test test.cpp)
+add_executable(test input_test.cpp)
 
 if(UTIL_LIB)
 	target_link_libraries(test PRIVATE ${UTIL_LIB})
