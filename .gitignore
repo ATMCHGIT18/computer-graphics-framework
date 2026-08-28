@@ -4,3 +4,5 @@ test_1.*
 bin/
 
 *_test.txt
+
+input_test.cpp
