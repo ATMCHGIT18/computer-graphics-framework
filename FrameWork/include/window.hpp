@@ -8,7 +8,8 @@ namespace cgf{
 
 	/*Create a Window. Window object will create Terminal itself so you need only to put it there the name and font size.
 	You can have only one Window object*/
-	class Window{
+
+	class WindowTerminal{
 	private:
 		int height;
 		int width;
@@ -20,7 +21,7 @@ namespace cgf{
 		PixelMatrix pixels;
 		TerminalLauncher terminal;
 	public:
-		Window(int height, int width, float font_size, std::string application_name)
+		WindowTerminal(int height, int width, float font_size, std::string application_name)
         : height(height), width(width),
           resolution_X(width), resolution_Y(height), // same for now, split later if needed
           font_size(font_size),
@@ -28,8 +29,8 @@ namespace cgf{
           terminal(application_name, height, width, font_size)
     	{}
 
-    	static Window headless(int height, int width) {
-        	Window w(height, width);
+    	static WindowTerminal headless(int height, int width) {
+        	WindowTerminal w(height, width);
         	return w;
     	}
 
@@ -68,13 +69,105 @@ namespace cgf{
 		}
 
 	private:
-    Window(int height, int width)
+    WindowTerminal(int height, int width)
         : height(height), width(width),
           resolution_X(width), resolution_Y(height),
           pixels(width, height)
     {}
 
 	};
+
+
+	#if defined(__linux__)
+	class Window_X11{
+	public:
+		int width;
+		int height;
+		PixelMatrix pixels;
+		Display* display;
+		int screen;
+		Window window;
+		GC gc;
+		Visual* visual;
+		int depth;
+
+		Window_X11(int w, int h): width(w),height(h),pixels(width,height){
+			createWindow();
+		}
+		Window_X11(int w,int h, PixelMatrix& vertices): width(w),height(h),pixels(vertices){}
+		~Window_X11(){
+			XCloseDisplay(display);
+		}
+
+		int get_width() {return width;}
+		const int get_width() const {return width;}
+
+		int get_height(){return height;}
+		const int get_height() const {return height;}
+
+		PixelMatrix& get_pixels() {return pixels;}
+		const PixelMatrix& get_pixels() const {return pixels;}
+
+
+	private:
+		void createWindow(){
+			display = XOpenDisplay(nullptr);
+
+			if(!display){
+				std::cerr << "Failed to open X display!" << std::endl;
+				return;
+			}
+
+			screen = DefaultScreen(display);
+
+			window = XCreateSimpleWindow(
+				display,
+				RootWindow(display,screen),
+				100,
+				100,
+				width,
+				height,
+				1,
+				WhitePixel(display,screen),
+				BlackPixel(display,screen)
+				);
+
+			XSelectInput(display,window,ExposureMask | StructureNotifyMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask);
+
+			XMapWindow(display,window);
+
+			gc = XCreateGC(display,window,0,nullptr);
+			visual = DefaultVisual(display,screen);
+			depth = DefaultDepth(display,screen);
+
+			XFlush(display);
+		}
+		void copy_to_ximage(Matrix& matrix,XImage* image){
+		    uint32_t* destination = reinterpret_cast<uint32_t*>(image->data);
+
+		    int stride =
+		        image->bytes_per_line / sizeof(uint32_t);
+
+		    for (int y = 0; y < matrix.get_height(); ++y)
+		    {
+		        for (int x = 0; x < matrix.get_width(); ++x)
+		        {
+		            const Pixel& p =
+		                matrix.at(x,y);
+
+		            if (p.alpha == 0) continue;
+
+		            uint32_t xpixel =
+		                  (static_cast<uint32_t>(p.red)   << 16)
+		                | (static_cast<uint32_t>(p.green) << 8)
+		                |  static_cast<uint32_t>(p.blue);
+
+		            destination[y * stride + x] = xpixel;
+		        }
+		    }
+		}
+	};
+	#endif
 
 
 	class Renderer{
@@ -185,6 +278,72 @@ namespace cgf{
 		or another things like a sprit or something else.*/
 		void render_rectangle(){}
 	};
+
+	#if defined(__linux__)
+	class Renderer_X11{
+	private:
+		PixelMatrix& pixels;
+		Window_X11& window;
+	public:
+		Renderer_X11(PixelMatrix& pixel,Window_X11& win):pixels(pixel),window(win){}
+
+			void render(Point2D& start,Matrix& matrix_buff){
+				XImage* image = XCreateImage(
+									        window.display,
+									        window.visual,
+									        window.depth,
+									        ZPixmap,
+									        0,
+									        nullptr,
+									        matrix_buff.get_width(),
+									        matrix_buff.get_height(),
+									        32,
+									        0);
+
+			 	if (!image)
+		   		{
+		        std::cerr << "Failed to create XImage\n";
+		        return;
+		    	}
+
+		    	image->data = new char[
+		        	image->bytes_per_line * image->height
+		    	];
+
+				copy_to_ximage(matrix_buff,image);
+
+				XPutImage(window.display,window.window,window.gc,image,0,0,start.x,start.y,window.get_width(),window.get_height());
+				XDestroyImage(image);
+				XFlush(window.display);
+			}
+
+	private:
+		void copy_to_ximage(Matrix& matrix,XImage* image){
+		    uint32_t* destination = reinterpret_cast<uint32_t*>(image->data);
+
+		    int stride =
+		        image->bytes_per_line / sizeof(uint32_t);
+
+		    for (int y = 0; y < matrix.get_height(); ++y)
+		    {
+		        for (int x = 0; x < matrix.get_width(); ++x)
+		        {
+		            const Pixel& p =
+		                matrix.at(x,y);
+
+		            if (p.alpha == 0) continue;
+
+		            uint32_t xpixel =
+		                  (static_cast<uint32_t>(p.red)   << 16)
+		                | (static_cast<uint32_t>(p.green) << 8)
+		                |  static_cast<uint32_t>(p.blue);
+
+		            destination[y * stride + x] = xpixel;
+		        }
+		    }
+		}
+	};
+	#endif
 
 };
 
