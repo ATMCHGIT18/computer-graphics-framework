@@ -15,3 +15,17 @@ if(UTIL_LIB)
 else()
 	message(FATAL_ERROR "libutil is not found!")
 endif()
+
+if(UNIX AND NOT APPLE)
+    find_package(X11 REQUIRED)
+    if(X11_FOUND)
+        target_link_libraries(test PRIVATE ${X11_LIBRARIES})
+    endif()
+endif()
+
+if(APPLE)
+    target_link_libraries(test PRIVATE 
+        "-framework Carbon" 
+        "-framework ApplicationServices"
+    )
+endif()
