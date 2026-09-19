@@ -28,6 +28,8 @@ It serves two purposes at once:
 
 This project is under active development. Core pixel buffer, window, and terminal-launch logic are being built and tested first; rasterization algorithms and game-engine features (input handling, game loop utilities, etc.) come next.
 
+**Note:** **Right now this is v0.3, and this version is only stable in Linux machines and has problems in Windows machines and Mac machines.**
+
 ## Documentation
 
 Full documentation, design notes, and usage guides live in the project wiki:
