@@ -90,11 +90,17 @@ namespace cgf{
 		GC gc;
 		Visual* visual;
 		int depth;
+		Cursor cursor;
 
 		Window_X11(int w, int h): width(w),height(h),pixels(width,height){
 			createWindow();
 		}
-		Window_X11(int w,int h, PixelMatrix& vertices): width(w),height(h),pixels(vertices){}
+		Window_X11(int w,int h, PixelMatrix& vertices): width(w),height(h),pixels(vertices){
+			createWindow();
+		}
+		Window_X11(int w,int h, PixelMatrix& vertices,Cursor& curs): width(w),height(h),pixels(vertices),cursor(curs){
+			createWindow();
+		}
 		~Window_X11(){
 			XCloseDisplay(display);
 		}
@@ -102,11 +108,115 @@ namespace cgf{
 		int get_width() {return width;}
 		const int get_width() const {return width;}
 
+		const Display* get_display() const{return display;}
+		Display* get_display(){return display;}
+
+
 		int get_height(){return height;}
 		const int get_height() const {return height;}
 
+		// It has a weird effect and not resizing but creating new window
+		// void resize(int w,int h){
+		// 	this->height = h;
+		// 	this->width = w;
+		// 	createWindow();
+
+		// }
+
 		PixelMatrix& get_pixels() {return pixels;}
 		const PixelMatrix& get_pixels() const {return pixels;}
+
+		void assign_cursor(Cursor& curs) {
+			this->cursor = curs;
+			XDefineCursor(display,window,cursor);
+		}
+
+		bool poll_event(Event_X11& event){
+			// std::cout << XPending(display) << std::endl;
+			// if(XPending(display) == 0){
+			// 	return false;
+			// }
+
+			XEvent xevent;
+			XNextEvent(display,&xevent);
+			
+			switch (xevent.type)
+    	{
+        case KeyPress:
+
+            event.type = EventType_X11::KeyPressed;
+            event.key_code = xevent.xkey.keycode;
+            return true;
+
+        case KeyRelease:
+
+            event.type = EventType_X11::KeyReleased;
+            event.key_code = xevent.xkey.keycode;
+            return true;
+
+        case ButtonPress:
+
+            event.type = EventType_X11::MouseButtonPressed;
+
+            event.mouse_x = xevent.xbutton.x;
+            event.mouse_y = xevent.xbutton.y;
+            event.mouse_button = xevent.xbutton.button;
+            return true;
+
+
+        case ButtonRelease:
+
+            event.type = EventType_X11::MouseButtonReleased;
+
+            event.mouse_x = xevent.xbutton.x;
+            event.mouse_y = xevent.xbutton.y;
+            event.mouse_button = xevent.xbutton.button;
+            return true;
+
+
+        case MotionNotify:
+
+            event.type = EventType_X11::MouseMoved;
+
+            event.mouse_x = xevent.xmotion.x;
+            event.mouse_y = xevent.xmotion.y;
+            return true;
+
+
+        case ConfigureNotify:
+
+            event.type = EventType_X11::WindowResized;
+            event.width = xevent.xconfigure.width;
+            event.height = xevent.xconfigure.height;
+            return true;
+
+
+        case Expose:
+
+            event.type = EventType_X11::Exposed;
+            return true;
+
+        case ResizeRequest:
+    		return true;
+
+      	case EnterNotify:
+      		event.type = EventType_X11::Entered;
+      		event.inside_window = true;
+      		event.entered_window = true;
+      		return true;
+
+      	case LeaveNotify:
+      		event.type = EventType_X11::Left;
+      		event.inside_window = false;
+      		event.entered_window = false;
+
+        default:
+
+            event.type = EventType_X11::Unknown;
+            return false;
+    	}
+
+		}
 
 
 	private:
@@ -117,6 +227,7 @@ namespace cgf{
 				std::cerr << "Failed to open X display!" << std::endl;
 				return;
 			}
+			pixels = PixelMatrix(this->get_width(),this->get_height());
 
 			screen = DefaultScreen(display);
 
@@ -132,7 +243,7 @@ namespace cgf{
 				BlackPixel(display,screen)
 				);
 
-			XSelectInput(display,window,ExposureMask | StructureNotifyMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask);
+			XSelectInput(display,window,ExposureMask | StructureNotifyMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask | ResizeRedirectMask | EnterWindowMask | LeaveWindowMask);
 
 			XMapWindow(display,window);
 
@@ -287,37 +398,91 @@ namespace cgf{
 	public:
 		Renderer_X11(PixelMatrix& pixel,Window_X11& win):pixels(pixel),window(win){}
 
-			void render(Point2D& start,Matrix& matrix_buff){
-				XImage* image = XCreateImage(
-									        window.display,
-									        window.visual,
-									        window.depth,
-									        ZPixmap,
-									        0,
-									        nullptr,
-									        matrix_buff.get_width(),
-									        matrix_buff.get_height(),
-									        32,
-									        0);
+		void render(const Point2D& start,Matrix& matrix_buff){
+			XImage* image = XCreateImage(
+								        window.display,
+								        window.visual,
+								        window.depth,
+								        ZPixmap,
+								        0,
+								        nullptr,
+								        matrix_buff.get_width(),
+								        matrix_buff.get_height(),
+								        32,
+								        0);
 
-			 	if (!image)
-		   		{
-		        std::cerr << "Failed to create XImage\n";
-		        return;
-		    	}
+		 	if (!image)
+	   		{
+	        std::cerr << "Failed to create XImage\n";
+	        return;
+	    	}
 
-		    	image->data = new char[
-		        	image->bytes_per_line * image->height
-		    	];
+	    	pixels.clear();
 
-				copy_to_ximage(matrix_buff,image);
+	    	image->data = new char[
+	        	image->bytes_per_line * image->height
+	    	];
 
-				XPutImage(window.display,window.window,window.gc,image,0,0,start.x,start.y,window.get_width(),window.get_height());
-				XDestroyImage(image);
-				XFlush(window.display);
-			}
+	    	clear_ximage(image);
+
+	    	
+			copy_to_ximage(matrix_buff,image);
+
+			XPutImage(window.display,window.window,window.gc,image,0,0,start.x,start.y,window.get_width(),window.get_height());
+			XDestroyImage(image);
+			XFlush(window.display);
+			// matrix_buff.clear();
+
+		}
+
+		void render(Point2D& start,Matrix& matrix_buff){
+			XImage* image = XCreateImage(
+								        window.display,
+								        window.visual,
+								        window.depth,
+								        ZPixmap,
+								        0,
+								        nullptr,
+								        matrix_buff.get_width(),
+								        matrix_buff.get_height(),
+								        32,
+								        0);
+
+		 	if (!image)
+	   		{
+	        std::cerr << "Failed to create XImage\n";
+	        return;
+	    	}
+	    	pixels.clear();
+
+	    	image->data = new char[
+	        	image->bytes_per_line * image->height
+	    	];
+	    	clear_ximage(image);
+
+			copy_to_ximage(matrix_buff,image);
+
+			XPutImage(window.display,window.window,window.gc,image,0,0,start.x,start.y,window.get_width(),window.get_height());
+			XDestroyImage(image);
+			XFlush(window.display);
+			// matrix_buff.clear();
+		}
 
 	private:
+		void clear_ximage(XImage* image, uint32_t clear_color = 0x00000000) {
+		    if (!image || !image->data) return;
+
+		    // If clearing to pitch black (0):
+		    if (clear_color == 0) {
+		        std::memset(image->data, 0, image->bytes_per_line * image->height);
+		    } 
+		    // If clearing to a specific 32-bit ARGB/RGBA color:
+		    else {
+		        uint32_t* pixels = reinterpret_cast<uint32_t*>(image->data);
+		        size_t total_pixels = image->width * image->height;
+		        std::fill(pixels, pixels + total_pixels, clear_color);
+		    }
+		}
 		void copy_to_ximage(Matrix& matrix,XImage* image){
 		    uint32_t* destination = reinterpret_cast<uint32_t*>(image->data);
 
@@ -343,6 +508,7 @@ namespace cgf{
 		    }
 		}
 	};
+
 	#endif
 
 };
