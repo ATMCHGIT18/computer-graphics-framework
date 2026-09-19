@@ -104,6 +104,47 @@ namespace cgf{
 		#endif
 	};
 
+	#if defined(__linux__)
+
+	enum class EventType_X11 {
+		Unknown,
+		WindowClosed,
+		WindowResized,
+		KeyPressed,
+		KeyReleased,
+		MouseMoved,
+		MouseButtonPressed,
+		MouseButtonReleased,
+		Exposed,
+		Resized,
+		Entered,
+		Left
+	};
+
+
+	class Event_X11{
+	public:
+		EventType_X11 type = EventType_X11::Unknown;
+
+		int key_code = 0;
+
+	    // Mouse
+	    int mouse_x = 0;
+	    int mouse_y = 0;
+
+	    int mouse_button = 0;
+
+	    // Window
+	    int width = 0;
+	    int height = 0;
+
+	    bool inside_window = true;
+	    bool entered_window = false;
+
+
+	};
+	#endif
+
 	enum KeyState{UP,PRESSED,HELD,RELEASED};
 
 }
