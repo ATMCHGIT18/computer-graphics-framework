@@ -25,12 +25,12 @@ Status legend:  🟡 Planned · 🔵 In Progress · 🟢 Done · 🔴 Delayed
 
 
 ## v0.3 - [15th September 2026]
-**Status:**  🔵 In Progress
+**Status:**  🟢 Done Partially
 **Goal:** Support fully of 
 
 - [🟢] `X11` compatibility for window creation instead of using terminal as window
 - [🟢] `X11` event listening for keyboard and mouse movement event which more advanced than the `event.hpp` objects.
-- [🔵] Compatibility of the whole framework on different machines
+- [🔴] Compatibility of the whole framework on different machines
 
 
 ## v0.4 - [1st October 2026]
