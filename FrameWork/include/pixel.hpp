@@ -14,6 +14,7 @@ namespace cgf{
 		virtual int get_height() const = 0;
 		virtual void set_pixel(int x,int y, Color& col) = 0;
 		virtual void set_pixel(int x,int y, const Color& col) = 0;
+		virtual void clear() = 0;
 
 	};
 	
@@ -42,8 +43,81 @@ namespace cgf{
 		void set_pixel(int x , int y,const Color& col) override {
 			at(x,y) = col;
 		}
+		void clear() override {pixels.assign(width*height,Color{0.0f,0.0f,0.0f,1.0f});}
 
 	};
+
+	class PixelMatrix : public Matrix{
+	private:
+		int width;
+		int height;
+		std::vector<Pixel> pixels; // flatten the 2d pixel matrix  index = y * width + x
+
+		int index(int x ,int y) const {
+			if (x<0  || y < 0 || x>=width || y>=height){
+				throw std::runtime_error("PixelMatrix: coordinate out of range.");
+			}
+
+			return y * width + x;
+		}
+	public:
+		PixelMatrix() = default;
+		PixelMatrix(int width, int height)
+        	: width(width), height(height), pixels(width * height, Pixel{})
+    	{}
+
+		Pixel& at(int x,int y) override {
+			return pixels[index(x,y)];
+		}
+
+		const Pixel& at(int x, int y) const override{
+			return pixels[index(x,y)];
+		}
+
+
+		void set_pixel(int x, int y, Color& col) override{
+        	at(x, y) = Pixel(col);
+    	}
+    	void set_pixel(int x, int y,const Color& col) override{
+        	at(x, y) = Pixel(col);
+    	}
+
+    	int get_width() const override{ return width; }
+    	int get_height() const override{ return height; }
+    	void clear() override {pixels.assign(width*height,Color{0.0f,0.0f,0.0f,1.0f});}
+
+    	// For the transparency and alpha channel architecture, uses
+    	// result = src_color * src_alpha + dst_color * (1 - src_alpha) where dst is the already color in the pixel
+    	
+    	// static uint8_t blend_channel(uint8_t src, uint8_t dst, uint8_t alpha) {
+		//     return static_cast<uint8_t>((src * alpha + dst * (255 - alpha)) / 255);
+		// }
+
+		// void set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
+		//     Pixel& target = at(x, y);
+
+		//     if (a == 255) {          // fully opaque — cheap path, no math needed
+		//         target = Pixel{r, g, b, 255};
+		//         return;
+		//     }
+		//     if (a == 0) {             // fully transparent — no-op
+		//         return;
+		//     }
+
+		//     // partial transparency — blend against whatever's currently there
+		//     target.red   = blend_channel(r, target.red,   a);
+		//     target.green = blend_channel(g, target.green, a);
+		//     target.blue  = blend_channel(b, target.blue,   a);
+		//     target.alpha = 255; // buffer itself stays opaque; only source pixels carry transparency
+		// }
+
+		// explicit bypass — useful for clear(), or anywhere you want a hard overwrite
+		void set_pixel_raw(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
+		    at(x, y) = Pixel{r, g, b, a};
+		}
+
+	};
+
 
 	class SampleBuffer{
 	private:
@@ -90,81 +164,6 @@ namespace cgf{
 	private:
 		Color coverage(Color& now, Color& back, float coverage){
 			return now * coverage + back*(1.0f-coverage);
-		}
-
-	};
-
-	class PixelMatrix : public Matrix{
-	private:
-		int width;
-		int height;
-		std::vector<Pixel> pixels; // flatten the 2d pixel matrix  index = y * width + x
-
-		int index(int x ,int y) const {
-			if (x<0  || y < 0 || x>=width || y>=height){
-				throw std::runtime_error("PixelMatrix: coordinate out of range.");
-			}
-
-			return y * width + x;
-		}
-	public:
-		PixelMatrix() = default;
-		PixelMatrix(int width, int height)
-        	: width(width), height(height), pixels(width * height, Pixel{})
-    	{}
-
-		Pixel& at(int x,int y) override {
-			return pixels[index(x,y)];
-		}
-
-		const Pixel& at(int x, int y) const override{
-			return pixels[index(x,y)];
-		}
-
-
-		void set_pixel(int x, int y, Color& col) override{
-        	at(x, y) = Pixel(col);
-    	}
-    	void set_pixel(int x, int y,const Color& col) override{
-        	at(x, y) = Pixel(col);
-    	}
-
-    	int get_width() const override{ return width; }
-    	int get_height() const override{ return height; }
-
-    	// For the transparency and alpha channel architecture, uses
-    	// result = src_color * src_alpha + dst_color * (1 - src_alpha) where dst is the already color in the pixel
-    	
-    	// static uint8_t blend_channel(uint8_t src, uint8_t dst, uint8_t alpha) {
-		//     return static_cast<uint8_t>((src * alpha + dst * (255 - alpha)) / 255);
-		// }
-
-		// void set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
-		//     Pixel& target = at(x, y);
-
-		//     if (a == 255) {          // fully opaque — cheap path, no math needed
-		//         target = Pixel{r, g, b, 255};
-		//         return;
-		//     }
-		//     if (a == 0) {             // fully transparent — no-op
-		//         return;
-		//     }
-
-		//     // partial transparency — blend against whatever's currently there
-		//     target.red   = blend_channel(r, target.red,   a);
-		//     target.green = blend_channel(g, target.green, a);
-		//     target.blue  = blend_channel(b, target.blue,   a);
-		//     target.alpha = 255; // buffer itself stays opaque; only source pixels carry transparency
-		// }
-
-		// explicit bypass — useful for clear(), or anywhere you want a hard overwrite
-		void set_pixel_raw(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
-		    at(x, y) = Pixel{r, g, b, a};
-		}
-
-		void clear(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0, uint8_t a = 255) {
-		    Pixel bg{r, g, b, a};
-		    std::fill(pixels.begin(), pixels.end(), bg);
 		}
 
 	};
