@@ -4,6 +4,7 @@
 #include <./che_framework_graphics.hpp>
 
 namespace cgf{
+
 	class ImageLoader{
 	public:
 		static Image load(const std::string& filename){
