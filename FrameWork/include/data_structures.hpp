@@ -17,6 +17,9 @@ namespace cgf{
 		Point2D operator+(const Point2D& other){
 			return Point2D(x+other.x,y+other.y);
 		}
+		Point2D operator+(const  float f){
+			return Point2D(x+f,y+f);
+		}
 		Point2D operator*(const float f){
 			return Point2D(x*f,y*f);
 		}
@@ -102,5 +105,6 @@ namespace cgf{
           alpha(pixel.alpha / 255.0f) {}
 
 }
+// Add CYMK coloring philosohpy 
 
 #endif
